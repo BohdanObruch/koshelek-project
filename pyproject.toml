@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "koshelek-project"
+version = "0.1.0"
+description = "This is a test project for registration on the site koshelek.ru"
+authors = ["Bohdan Obruch <bodan1992@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pytest-playwright = "^0.5.2"
+playwright = "^1.48.0"
+pytest = "8.3.3"
+pytest-xdist = "^3.6.1"
+pytest-base-url = "^2.1.0"
+allure-pytest = "^2.13.5"
+
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+addopts = """
+        --alluredir=allure-results
+        --base-url=https://koshelek.ru
+        -n 5
+        --screenshot=only-on-failure
+        --video=retain-on-failure
+        """
+
+
