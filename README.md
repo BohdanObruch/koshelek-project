@@ -129,4 +129,4 @@ pytest --device="iPhone 14 Plus" --browser-channel msedge -screenshot=off --vide
 
 Пример отображения отчета Allure:
 
-![Allure Report](./images/allure_report.png)
+![Allure Report](/picture/Allure-Report.png)
