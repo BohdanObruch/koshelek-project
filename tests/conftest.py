@@ -40,6 +40,14 @@ def context(browser: Browser, browser_context_args) -> BrowserContext:
     yield context
     context.close()
 
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    rep = outcome.get_result()
+
+    setattr(item, "rep_" + rep.when, rep)
+
 @pytest.fixture(autouse=True)
 def allure_attach(request, page: Page, context: BrowserContext):
     yield context
@@ -63,7 +71,6 @@ def allure_attach(request, page: Page, context: BrowserContext):
     # Attach screen size info
     allure.attach(screen_size_info, name="Screen Size Info", attachment_type=allure.attachment_type.TEXT)
 
-    # Check if the test has failed
     if request.node.rep_call.failed:
         # Capture screenshot
         screenshot_path = f"reports/{request.node.name}.png"
