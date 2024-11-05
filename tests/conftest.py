@@ -4,6 +4,8 @@ from koshelek_project.pages.main_page import MainPage
 from koshelek_project.pages.registration_page import RegistrationPage
 import allure
 
+from koshelek_project.utils.registration_helpers import RegistrationHelpers
+
 
 def pytest_addoption(parser):
     parser.addoption("--size", action="store", default="1920,1080", help="browser window size")
@@ -100,3 +102,8 @@ def go_to_registration_page(main):
     main.navigate()
     main.verify_headed_visible()
     main.click_on_registration_button()
+
+
+@pytest.fixture
+def registration_helpers(registration):
+    return RegistrationHelpers(registration)
