@@ -45,7 +45,7 @@ jobs:
 
     - name: Run tests
       run: |
-        poetry run pytest --grep "${{ github.event.inputs.grep }}"
+        poetry run pytest -k "${{ github.event.inputs.grep }}"
       env:
         TESTOMATIO: "${{ github.event.inputs.testomatio }}"
         TESTOMATIO_RUN: "${{ github.event.inputs.run }}"
