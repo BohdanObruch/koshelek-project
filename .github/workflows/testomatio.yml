@@ -1,0 +1,78 @@
+name: Testomatio Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      grep:
+        description: 'tests to grep '
+        required: false
+        default: ''
+      run:
+        required: false
+      testomatio:
+        required: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Cache Poetry dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/pypoetry
+          ~/.cache/pip
+        key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-poetry-
+    - run: |
+        pip install --no-cache-dir poetry \
+        && poetry config virtualenvs.create false \
+        && poetry install --no-interaction --no-ansi
+
+    - name: Install Playwright browsers
+      run: |
+        poetry run playwright install chromium
+
+    - name: Run tests
+      run: |
+        poetry run pytest --grep "${{ github.event.inputs.grep }}"
+      env:
+        TESTOMATIO: "${{ github.event.inputs.testomatio }}"
+        TESTOMATIO_RUN: "${{ github.event.inputs.run }}"
+      continue-on-error: true
+
+    - uses: actions/upload-artifact@v4
+      if: always()
+      continue-on-error: true
+      with:
+        name: allure-results
+        path: allure-results
+        retention-days: 20
+
+    - uses: simple-elf/allure-report-action@master
+      if: always()
+      id: allure-report
+      with:
+        allure_results: allure-results
+        gh_pages: gh-pages
+        allure_report: allure-report
+        allure_history: allure-history
+        keep_reports: 20
+
+    - name: create Allure report
+      if: always()
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_branch: gh-pages
+        publish_dir: allure-history
