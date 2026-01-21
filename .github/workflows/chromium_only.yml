@@ -1,4 +1,4 @@
-name: Normal Tests
+name: Tests in chromium browser
 
 on:
   push:

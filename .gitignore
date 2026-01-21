@@ -162,3 +162,4 @@ cython_debug/
 .idea/
 allure-results
 tests/allure-results
+/reports
